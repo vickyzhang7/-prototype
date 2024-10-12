@@ -1,39 +1,77 @@
-import React, { useRef } from 'react';
+import axios from 'axios';
+import React, { useEffect, useState, useRef } from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler, TimeScale } from 'chart.js';
 import 'chartjs-adapter-date-fns';
+import { sub } from 'date-fns';
+import Tabs from './Tabs';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler, TimeScale);
 
 const PriceLineChart = () => {
   const chartRef = useRef(null);
+  const [timeRange, setTimeRange] = useState('ALL');
+  const [data, setData] = useState([]);
 
+  useEffect(() => {
+    axios.get('http://localhost:5001/api/price-data')
+      .then(response => {
+        const loadedData = response.data.map(d => ({
+          time: new Date(d.Date),
+          price: +d.Price
+        }));
+        setData(loadedData);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
 
-  const dummyData = [
-    { time: new Date(2024, 5, 1), price: 100 },
-    { time: new Date(2024, 5, 2), price: 105 },
-    { time: new Date(2024, 5, 3), price: 110 },
-    { time: new Date(2024, 5, 4), price: 95 },
-    { time: new Date(2024, 5, 5), price: 100 }
-  ];
+  const filterData = (range) => {
+    const now = new Date();
+    switch (range) {
+      case '1W':
+        return data.filter(datapoint => datapoint.time > sub(now, { weeks: 1 }));
+      case '1M':
+        return data.filter(datapoint => datapoint.time > sub(now, { months: 1 }));
+      case '3M':
+        return data.filter(datapoint => datapoint.time > sub(now, { months: 3 }));
+      case '6M':
+        return data.filter(datapoint => datapoint.time > sub(now, { months: 6 }));
+      case '1Y':
+        return data.filter(datapoint => datapoint.time > sub(now, { years: 1 }));
+      case 'ALL':
+      default:
+        return data;
+    }
+  };
 
-
-  const transformedData = dummyData.map((datapoint) => ({
+  const transformedData = filterData(timeRange).map(datapoint => ({
     x: datapoint.time,
     y: datapoint.price
   }));
-
 
   const dataFinal = {
     datasets: [
       {
         label: 'Price',
-        data: transformedData.map((datapoint) => ({ x: datapoint.x.getTime(), y: datapoint.y })),
+        data: transformedData.map(datapoint => ({ x: datapoint.x.getTime(), y: datapoint.y })),
         borderColor: '#5475d8',
-        backgroundColor: 'rgba(84, 117, 216, 0.5)',
+        backgroundColor: (context) => {
+          const chart = context.chart;
+          const { ctx, chartArea } = chart;
+          if (!chartArea) {
+            return null;
+          }
+          const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+          gradient.addColorStop(0, 'rgba(84, 117, 216, 1)');
+          gradient.addColorStop(1, 'rgba(84, 117, 216, 0)');
+          return gradient;
+        },
         fill: true,
         tension: 0,
         borderWidth: 1.8,
+        pointRadius: 0
       }
     ]
   };
@@ -82,8 +120,22 @@ const PriceLineChart = () => {
   };
 
   return (
-    <div style={{ height: '400px', width: '100%' }}>
+    <div style={{ height: '450px', width: '100%', overflowY: 'auto', paddingBottom: '100px' }}>
+      <div style={{ fontSize: '24px', fontWeight: 'bold', textAlign: 'center', marginBottom: '10px' }}>
+        Price Line Chart
+      </div>
+
+      <div style={{ marginBottom: '30px' }}>
+        <Tabs
+          list={['1W', '1M', '3M', '6M', '1Y', 'ALL']}
+          value={timeRange}
+          onChange={(newRange) => setTimeRange(newRange)}
+        />
+      </div>
+
       <Line data={dataFinal} options={options} ref={chartRef} />
+
+      <div style={{ height: '50px' }}></div>
     </div>
   );
 };

@@ -2,6 +2,8 @@ import React from 'react';
 
 const DataTable = ({ data }) => {
   return (
+    <div>
+    <div style={{ fontSize: '24px', fontWeight: 'bold', textAlign: 'center', marginBottom: '10px' }}>Table</div>
     <table>
       <thead>
         <tr>
@@ -20,6 +22,7 @@ const DataTable = ({ data }) => {
         ))}
       </tbody>
     </table>
+    </div>
   );
 };
 

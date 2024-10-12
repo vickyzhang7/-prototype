@@ -20,7 +20,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>React Looker & BigQuery Project</h1>
+      <h1>React and Python Project</h1>
       <LayoutManager>
         <DataTable data={data} />
         <BarChart data={data} />

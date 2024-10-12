@@ -13,7 +13,7 @@ const LayoutManager = ({ children }) => {
     lg: [
       { i: 'table', x: 0, y: 0, w: 6, h: 10 },
       { i: 'chart', x: 6, y: 0, w: 6, h: 10 },
-      { i: 'lineChart', x: 0, y: 1, w: 12, h: 10 }  // 新增的第三个图表
+      { i: 'lineChart', x: 0, y: 1, w: 12, h: 10 }  
     ],
     md: [
       { i: 'table', x: 0, y: 0, w: 6, h: 10 },
