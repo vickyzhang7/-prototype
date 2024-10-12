@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DataTable from './components/DataTable';
 import BarChart from './components/BarChart';
 import LayoutManager from './components/LayoutManager';
+import PriceLineChart from './components/PriceLineChart'; 
 import './App.css';
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
       <LayoutManager>
         <DataTable data={data} />
         <BarChart data={data} />
+        <PriceLineChart /> 
       </LayoutManager>
     </div>
   );
