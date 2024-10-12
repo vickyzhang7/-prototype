@@ -4,7 +4,7 @@ import { Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
-// 使用 WidthProvider 使得 GridLayout 能够自适应宽度
+
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const LayoutManager = ({ children }) => {
