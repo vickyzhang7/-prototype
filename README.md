@@ -6,6 +6,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 In the project directory, you can run:
 
+### `npm install ajv@^6.12.6 ajv-keywords@^3.5.2`
 ### `npm start`
 
 Runs the app in the development mode.\
